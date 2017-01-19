@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include <limits.h>
 #include <float.h>
 
@@ -5,21 +6,32 @@
 Write a program to determine the ranges of char, short, int and long variables, both signed and unsigned, by printing appropriate values from standard headers and direct computation. Harder if you compute them: determine the ranges of the various floating-point types.
 */
 
+// https://en.wikipedia.org/wiki/Two's_complement
+// unsiged char = number of bits~0 = two's complement. The max size for the bits, for all positive.
+// shift the bits left by 1 to get the max for signed, do the same for min, invert and minus 1.
+// ~0 = -1
+// (unsigned char) ~0 = (0000 0000) ~0 = (1111 1111) = 255
+// (unsigned char) ~0 >> 1 = (0000 0000) ~0 >> 1 = (1111 1111) >> 1 = (0111 1111) = 127
+// -(unsigned char) ~0 >> 1 = -(0000 0000) ~0 >> 1 - 1 = -(1111 1111) >> 1 - 1 = -(0111 1111) - 1 = -127 - 1 = -128
 int main() 
 {
-        printf("Size of char: %d\n", CHAR_BIT);
-        printf("Size of char min: %d\n", CHAR_MIN);
-        printf("Size of char max: %d\n", CHAR_MAX);
-        printf("Size of int min: %d\n", INT_MIN);
-        printf("Size of int max: %d\n", INT_MAX);
-        printf("Size of long min: %d\n", LONG_MIN);
-        printf("Size of long max: %d\n", LONG_MAX);
-        printf("Size of signed char min: %d\n", SCHAR_MIN);
-        printf("Size of signed char max: %d\n", SCHAR_MAX);
-        printf("Size of short min: %d\n", SHRT_MIN);
-        printf("Size of short max: %d\n", SHRT_MAX);
-        printf("Size of unsigned char: %d\n", UCHAR_MAX);
-        printf("Size of unsigned int: %d\n", UINT_MAX);
-        printf("Size of unsigned long: %d\n", ULONG_MAX);
-        printf("Size of unsigned short: %d\n", USHRT_MAX);
+        printf("Chars:\n");
+        printf("\tThe size of unsigned Char Max: %d\n", (unsigned char)~0);
+        printf("\tThe size of signed Char Max: %d\n", (unsigned char)~0 >> 1);
+        printf("\tThe size of signed Char Min: %d\n", -((unsigned char)~0 >> 1) - 1);
+
+        printf("Ints:\n");
+        printf("\tThe size of unsigned int: %u\n", (unsigned int)~0);
+        printf("\tThe size of signed int Max: %d\n", (int)((unsigned int) ~0 >> 1));
+        printf("\tThe size of signed int Min: %d\n", -(int)((unsigned int) ~0 >> 1) - 1);
+        
+        printf("Shorts:\n");
+        printf("\tThe size of unsigned short: %d\n", (unsigned short)~0);
+        printf("\tThe size of signed short Max: %d\n", (short)((unsigned short)~0 >> 1));
+        printf("\tThe size of signed short Min: %d\n", -(short)((unsigned short)~0 >> 1) -1);
+
+        printf("Longs:\n");
+        printf("\tThe size of unsiged long: %lu\n", (unsigned long)~0);
+        printf("\tThe size of signed long Max: %ld\n", (long)((unsigned long)~0 >> 1));
+        printf("\tThe size of signed long Min: %ld\n", -(long)((unsigned long)~0 >> 1) - 1);
 }
