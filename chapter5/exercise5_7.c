@@ -13,20 +13,21 @@ static char *allocp = allocbuf;
 
 
 char *lineptr[MAXLINES];
+char lines[MAXLINES][MAXLEN];
 
-int readlines(char *lineptr[], int nlines);
-void writelines(char *lineptr[], int nlines);
+int my_readlines(char lines[][MAXLEN], int nlines);
+void writelines(char lines[][MAXLEN], int nlines);
 int getline_c(char s[], int lim);
 
-void qsort(char *lineptr[], int left, int right);
+void qsort(char lines[][MAXLEN], int left, int right);
 
-int main()
+int main(int argc, char *argv[])
 {
 	int nlines;
 
-	if ((nlines = readlines(lineptr, MAXLINES)) >= 0) {
-		qsort(lineptr, 0, nlines - 1);
-		writelines(lineptr, nlines);
+	if ((nlines = my_readlines(lines, MAXLINES)) >= 0) {
+		qsort(lines, 0, nlines - 1);
+		writelines(lines, nlines);
 		return 0;
 	} else {
 		printf("error: input to big to sort\n");
@@ -34,39 +35,24 @@ int main()
 	}
 }
 
-char *alloc(int n)
-{
-	if (allocbuf + ALLOCSIZE - allocp >= n) {
-		allocp += n;
-		return allocp - n;
-	} else {
-		return 0;
-	}
-}
-
-
-int readlines(char *lineptr[], int maxlines)
+int my_readlines(char lines[][MAXLEN], int maxlines)
 {
 	int len, nlines;
-	char *p, line[MAXLEN];
-	
+
 	nlines = 0;
-	while ((len = getline_c(line, MAXLEN)) > 0) {
-		if (nlines >= maxlines || (p = alloc(len)) == NULL) {
+	while ((len = getline_c(lines[nlines], MAXLEN)) > 0) {
+		if (nlines >= maxlines)
 			return -1;
-		} else {
-			line[len-1] = '\0';
-			strcpy(p, line);
-			lineptr[nlines++] = p;
+		else {
+			lines[nlines++][len-1] = '\0';
 		}
 	}
-	return nlines;
 }
 
-void writelines(char *lineptr[], int nlines)
+void writelines(char lines[][MAXLEN], int nlines)
 {
 	while (nlines-- > 0)
-		printf("%s\n", *lineptr++);
+		printf("%s\n", *lines++);
 }
 
 // Getline from section 1.9 in the C book.
@@ -86,10 +72,10 @@ int getline_c(char s[], int lim)
 }
 
 
-void qsort(char *v[], int left, int right)
+void qsort(char v[][MAXLEN], int left, int right)
 {
 	int i, last;
-	void swap(char *v[], int i, int j);
+	void swap(char v[][MAXLEN], int i, int j);
 
 	if (left >= right)
 		return;
@@ -103,9 +89,9 @@ void qsort(char *v[], int left, int right)
 	qsort(v, last+1, right);
 }
 
-void swap(char *v[], int i, int j)
+void swap(char v[][MAXLEN], int i, int j)
 {
-	char *temp;
+	char temp;
 
 	temp = v[i];
 	v[i] = v[j];
